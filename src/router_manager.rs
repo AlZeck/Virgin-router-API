@@ -12,9 +12,9 @@ use ccm::{
   Ccm,
 };
 
-pub type AesCcm128 = Ccm<Aes128, U8, U8>;
+pub type AesCcm128 = Ccm<Aes128, U16, U8>;
 
-fn get_encrypted_login_payload(password: &[u8]) -> Result<String, Unspecified> {
+fn get_encrypted_login_payload(password: &str) -> Result<String, Unspecified> {
   let n_iter = NonZeroU32::new(1_000).unwrap();
   let rng = rand::SystemRandom::new();
 
@@ -32,7 +32,7 @@ fn get_encrypted_login_payload(password: &[u8]) -> Result<String, Unspecified> {
     pbkdf2::PBKDF2_HMAC_SHA256,
     n_iter,
     &salt,
-    password,
+    password.as_bytes(),
     &mut pbkdf2_hash,
   );
 
@@ -52,7 +52,7 @@ fn get_encrypted_login_payload(password: &[u8]) -> Result<String, Unspecified> {
     Ok(s) => s,
     Err(e) => panic!("Error converting to string: {}", e),
   };
-  let aad = "".as_bytes().to_vec();
+  let aad = "encryptData".as_bytes().to_vec();
 
   let key: &GenericArray<u8, U16> = GenericArray::from_slice(&pbkdf2_hash);
   let cypher = AesCcm128::new(key);
@@ -99,7 +99,7 @@ fn login(password: &[u8]) {
 
 pub fn get_lightring_state() {
   // TODO: Implement this function
-  login(b"password");
+  login("password");
   println!("get_lightring_state");
 }
 

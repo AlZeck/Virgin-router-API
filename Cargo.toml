@@ -8,6 +8,9 @@ aes = "0.6.0"
 ccm = "0.3.0"
 cipher = "0.4.3"
 data-encoding = "2.3.2"
+reqwest = "0.11.10"
 ring = "0.16.20"
 serde = "1.0.137"
 serde_json = "1.0.81"
+tokio = { version = "1", features = ["full"] }
+

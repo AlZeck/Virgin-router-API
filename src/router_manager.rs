@@ -204,7 +204,7 @@ pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> 
   Ok(status)
 }
 
-pub async fn set_lightring_state(password: &str, state: u8) -> Result<(), reqwest::Error> {
+pub async fn set_lightring_state(password: &str, state: i32) -> Result<(), reqwest::Error> {
   let login_headers = match login(password).await {
     Ok(v) => v,
     Err(_) => panic!("Error logging in"),

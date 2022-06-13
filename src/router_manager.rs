@@ -228,7 +228,7 @@ pub async fn set_lightring_state(password: &str, state: u8) -> Result<(), reqwes
     ("opType", String::from("WRITE")),
   ];
 
-  let res: reqwest::Response = client
+  client
     .post("http://192.168.0.1/php/ajaxSet_lightring_data.php")
     .headers(headers)
     .form(&params)

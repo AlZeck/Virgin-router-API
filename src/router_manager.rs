@@ -147,7 +147,7 @@ async fn login(password: &str) -> Result<(String, String), reqwest::Error> {
       None => panic!("No cookie found"),
     }
   };
-  println!("\n\nCookie: {}", &cookie);
+  println!("Cookie: {}", &cookie);
 
   let body = match res.json::<LoginResponse>().await {
     Ok(b) => b,
@@ -161,6 +161,18 @@ async fn login(password: &str) -> Result<(String, String), reqwest::Error> {
   };
   println!("{}", nonce);
   Ok((cookie, nonce))
+}
+
+async fn logout(headers: header::HeaderMap) -> Result<(), reqwest::Error> {
+  let client = reqwest::Client::new();
+  client
+    .post("http://192.168.0.1/php/lightring_data.php")
+    .headers(headers)
+    .send()
+    .await?;
+  println!("Logged out\n");
+
+  Ok(())
 }
 
 pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> {
@@ -201,6 +213,18 @@ pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> 
     .unwrap();
 
   println!("get_lightring_state: {}", status);
+  headers = get_default_headers();
+
+  headers.insert(
+    "Cookie",
+    header::HeaderValue::from_str(&login_headers.0).unwrap(),
+  );
+
+  headers.insert(
+    "CSRF_NONCE",
+    header::HeaderValue::from_str(&login_headers.1).unwrap(),
+  );
+  logout(headers).await?;
   Ok(status)
 }
 
@@ -236,5 +260,18 @@ pub async fn set_lightring_state(password: &str, state: i32) -> Result<(), reqwe
     .await?;
 
   println!("set_lightring_state {}", state);
+
+  headers = get_default_headers();
+
+  headers.insert(
+    "Cookie",
+    header::HeaderValue::from_str(&login_headers.0).unwrap(),
+  );
+
+  headers.insert(
+    "CSRF_NONCE",
+    header::HeaderValue::from_str(&login_headers.1).unwrap(),
+  );
+  logout(headers).await?;
   Ok(())
 }

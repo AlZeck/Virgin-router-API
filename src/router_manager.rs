@@ -166,7 +166,7 @@ async fn login(password: &str) -> Result<(String, String), reqwest::Error> {
 async fn logout(headers: header::HeaderMap) -> Result<(), reqwest::Error> {
   let client = reqwest::Client::new();
   client
-    .post("http://192.168.0.1/php/lightring_data.php")
+    .post("http://192.168.0.1/php/logout.php")
     .headers(headers)
     .send()
     .await?;

@@ -175,7 +175,7 @@ async fn logout(headers: header::HeaderMap) -> Result<(), reqwest::Error> {
   Ok(())
 }
 
-pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> {
+pub async fn get_lightring_state(password: &str) -> Result<u64, reqwest::Error> {
   let login_headers = match login(password).await {
     Ok(v) => v,
     Err(_) => panic!("Error logging in"),
@@ -209,7 +209,7 @@ pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> 
     .get(1)
     .unwrap()
     .as_str()
-    .parse::<i32>()
+    .parse::<u64>()
     .unwrap();
 
   println!("get_lightring_state: {}", status);
@@ -228,7 +228,7 @@ pub async fn get_lightring_state(password: &str) -> Result<i32, reqwest::Error> 
   Ok(status)
 }
 
-pub async fn set_lightring_state(password: &str, state: i32) -> Result<(), reqwest::Error> {
+pub async fn set_lightring_state(password: &str, state: u64) -> Result<(), reqwest::Error> {
   let login_headers = match login(password).await {
     Ok(v) => v,
     Err(_) => panic!("Error logging in"),
